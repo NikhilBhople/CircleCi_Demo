@@ -15,14 +15,56 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.7.4")
+}
+
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.7.4")
+}
+
 allprojects {
     repositories {
         google()
         jcenter()
-        
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+tasks.register('detektAll', io.gitlab.arturbosch.detekt.Detekt) {
+    description = "Runs over whole code base without the starting overhead for each module."
+    autoCorrect = true
+    parallel = true
+    setSource(files(projectDir))
+    include("**/*.kt")
+    include("**/*.kts")
+    exclude("**/resources/**")
+    exclude("**/build/**")
+    config.from(files("$rootDir/detekt/detekt-config.yml")) // point to your custom config defining rules to run, overwriting default behavior
+    baseline.set(file("$rootDir/detekt/detekt-baseline.xml")) // a way of suppressing issues before introducing detekt
+    failFast = true // fail build on any finding
+    buildUponDefaultConfig = true // preconfigure defaults
+    reports {
+        xml.enabled = false
+        html.enabled = false
+    }
+}
+
+tasks.register('detektAllBaseline', io.gitlab.arturbosch.detekt.DetektCreateBaselineTask) {
+    description = "Overrides current baseline."
+    ignoreFailures.set(true)
+    parallel.set(true)
+    setSource(files(rootDir))
+    config.from(files("$rootDir/detekt/detekt-config.yml"))
+    baseline.set(file("$rootDir/detekt/detekt-baseline.xml"))
+    include("**/*.kt")
+    include("**/*.kts")
+    exclude("**/build/**")
+    exclude("**/buildSrc/**")
+    exclude("**/test/**/*.kt")
+}
+
+
