@@ -1,4 +1,4 @@
-name: Automatic branch merge
+name: Merge me!
 
 on:
   check_suite:
