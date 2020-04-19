@@ -58,6 +58,10 @@ jobs:
 
 
   deploy:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-29-node
+
     steps:
       - run:
           name: Download appcenter CLI
