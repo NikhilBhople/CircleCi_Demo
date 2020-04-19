@@ -38,3 +38,24 @@ jobs:
 
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: app/build/test-results
+
+
+    branches:
+      only:
+        - master
+      - run:
+          name: Building Debug apk
+          command: ./gradlew :app:assembleDebug
+
+      - run:
+          name: Download appcenter CLI
+          command: sudo npm install appcenter-cli -g
+
+      - run:
+          name: Login
+          command: appcenter login --token $APP_CENTER_TOKEN
+
+      - run:
+          name: Deliver to appcenter
+          command: appcenter distribute release --debug --app USER/APP --file app/build/outputs/apk/debug/app-debug.apk --group "App Testers"
+              # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
