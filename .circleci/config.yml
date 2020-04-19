@@ -52,6 +52,13 @@ jobs:
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: app/build/test-results
 
+
+  deploy:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-29-node
+
+    steps:
       - run:
           name: Building Debug apk
           command: ./gradlew :app:assembleDebug
@@ -60,13 +67,6 @@ jobs:
           name: Storing artifacts
           path: $ARTIFACTS_PATH
 
-
-  deploy:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-29-node
-
-    steps:
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
