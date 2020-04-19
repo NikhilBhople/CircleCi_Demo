@@ -67,7 +67,7 @@ jobs:
       - image: circleci/android:api-29-node
 
     steps:
-     - run:
+      - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
 
