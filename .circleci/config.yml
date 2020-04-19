@@ -1,5 +1,18 @@
 version: 2.1
 
+workflows: # Define a Workflow running the build job, then the deploy job
+  version: 2
+  build-deploy: # Make a workflow to build and deploy your project
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build # Only run deploy job once the build job has completed
+          filters:
+            branches:
+              only: master # Only deploy when the commit is on the Master branch
+
+
 jobs:
   build:
     working_directory: ~/code
@@ -39,23 +52,23 @@ jobs:
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: app/build/test-results
 
-
-    branches:
-      only:
-        - master
       - run:
           name: Building Debug apk
           command: ./gradlew :app:assembleDebug
 
+
+  deploy:
+    steps:
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
 
       - run:
-          name: Login
-          command: appcenter login --token $APP_CENTER_TOKEN
+          name: Login to APP CENTER
+          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
 
       - run:
           name: Deliver to appcenter
           command: appcenter distribute release --debug --app USER/APP --file app/build/outputs/apk/debug/app-debug.apk --group "App Testers"
-              # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
+
