@@ -77,7 +77,7 @@ jobs:
           root: artifact
           # Must be relative path from root
           paths:
-            - file
+            - ~/file
 
 
   deploy:
