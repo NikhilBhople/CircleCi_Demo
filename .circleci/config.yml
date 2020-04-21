@@ -94,16 +94,7 @@ jobs:
       - run: ls
       - run: cd artifact
       - run: ls
-      - hosts: all
-        tasks:
-          - name: Ansible check file exists example.
-            stat:
-              path: ~/artifact/app-debug.apk
-            register: file_details
 
-          - debug:
-              msg: "The file or directory exists"
-            when: file_details.stat.exists
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
