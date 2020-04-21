@@ -58,7 +58,8 @@ jobs:
 
       - store_artifacts:
           name: Storing artifacts
-          path: $ARTIFACTS_PATH
+          path: app/build/outputs/apk/debug/
+          destination: artifact-file
 
 
   deploy:
@@ -77,6 +78,6 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file $ARTIFACTS_PATH/app-debug.apk --group "App Testers"
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file app/build/outputs/apk/debug/artifact-file/app-debug.apk --group "App Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
