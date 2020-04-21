@@ -10,7 +10,7 @@ workflows: # Define a Workflow running the build job, then the deploy job
             - build # Only run deploy job once the build job has completed
           filters:
             branches:
-              only: master # Only deploy when the commit is on the Master branch
+              only: workflow # Only deploy when the commit is on the Master branch
 
 
 executors:
@@ -61,19 +61,21 @@ jobs:
           name: Building Debug apk
           command: ./gradlew :app:assembleDebug
 
+      - run:
+          name: Creating artifact persistant folder
+          command: mkdir -p artifact
+
       - store_artifacts:
           name: Storing artifacts
-          path: artifact/
-          destination: file
+          path: $ARTIFACTS_PATH
+          destination: artifact
 
       # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
           root: artifact
-          # Must be relative path from root
-          paths:
-            - file
+
 
 
   deploy:
@@ -93,6 +95,6 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file file/app-debug.apk --group "App Testers"
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file app-debug.apk --group "App Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
