@@ -13,11 +13,16 @@ workflows: # Define a Workflow running the build job, then the deploy job
               only: master # Only deploy when the commit is on the Master branch
 
 
+executors:
+  common-executor:
+    docker:
+      - image: circleci/android:api-29-node
+    working_directory: /code
+
+
 jobs:
   build:
-    working_directory: ~/code
-    docker:
-          - image: circleci/android:api-29
+    executor: common-executor
     steps:
       - checkout
 
@@ -58,16 +63,26 @@ jobs:
 
       - store_artifacts:
           name: Storing artifacts
-          path: app/build/outputs/apk/debug/
-          destination: artifact-file
+          path: artifact/
+          destination: file
+
+      # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: artifact
+          # Must be relative path from root
+          paths:
+            - file
 
 
   deploy:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-29-node
-
+    executor: common-executor
     steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /code/artifact
+
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
@@ -78,6 +93,6 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file app/build/outputs/apk/debug/artifact-file/app-debug.apk --group "App Testers"
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file file/app-debug.apk --group "App Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
