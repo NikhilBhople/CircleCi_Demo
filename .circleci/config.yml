@@ -68,7 +68,7 @@ jobs:
       - store_artifacts:
           name: Storing artifacts
           path: app/build/outputs/apk/debug/
-          destination: artifact/file
+          destination: artifact
 
       # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -77,7 +77,7 @@ jobs:
           root: artifact
           # Must be relative path from root
           paths:
-            - ~/file
+            - app-debug.apk
 
 
   deploy:
@@ -85,7 +85,7 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: ~/code/artifact/file
+          at: ~/code/artifact
 
       - run:
           name: Download appcenter CLI
