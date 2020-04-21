@@ -67,7 +67,7 @@ jobs:
 
       - store_artifacts:
           name: Storing artifacts
-          path: $ARTIFACTS_PATH
+          path: app/build/outputs/apk/debug/
           destination: artifact/file
 
       # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
