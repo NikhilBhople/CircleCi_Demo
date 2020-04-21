@@ -85,7 +85,7 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
+          at: ~/code
 
       - run:
           name: Download appcenter CLI
@@ -96,11 +96,11 @@ jobs:
           command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
 
       - run: pwd
-      - run: cd artifacts
+
       - run: ls
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file artifact/app-debug.apk --group "App Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
