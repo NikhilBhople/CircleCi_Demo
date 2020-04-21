@@ -68,14 +68,16 @@ jobs:
       - store_artifacts:
           name: Storing artifacts
           path: $ARTIFACTS_PATH
-          destination: artifact
+          destination: artifact/file
 
       # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
           root: artifact
-
+          # Must be relative path from root
+          paths:
+            - file
 
 
   deploy:
@@ -83,7 +85,7 @@ jobs:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
-          at: ~/code/artifact
+          at: ~/code/artifact/file
 
       - run:
           name: Download appcenter CLI
