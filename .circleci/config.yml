@@ -65,11 +65,6 @@ jobs:
           name: Creating artifact persistant folder
           command: mkdir -p artifact
 
-      - store_artifacts:
-          name: Storing artifacts
-          path: app/build/outputs/apk/debug/
-          destination: artifact
-
       # Persist the specified paths (artifact/file) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -78,6 +73,14 @@ jobs:
           # Must be relative path from root
           paths:
             - artifact/
+
+
+      - store_artifacts:
+          name: Storing artifacts
+          path: app/build/outputs/apk/debug/
+          destination: artifact
+
+
 
 
   deploy:
@@ -91,7 +94,16 @@ jobs:
       - run: ls
       - run: cd artifact
       - run: ls
+      - hosts: all
+        tasks:
+          - name: Ansible check file exists example.
+            stat:
+              path: ~/artifact/app-debug.apk
+            register: file_details
 
+          - debug:
+              msg: "The file or directory exists"
+            when: file_details.stat.exists
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
