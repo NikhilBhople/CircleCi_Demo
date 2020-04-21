@@ -61,6 +61,10 @@ jobs:
           name: Building Debug apk
           command: ./gradlew :app:assembleDebug
 
+      - run:
+          name: Creating artifact persistant folder
+          command: mkdir -p artifact
+
       - store_artifacts:
           name: Storing artifacts
           path: app/build/outputs/apk/debug/
