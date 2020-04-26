@@ -71,6 +71,13 @@ jobs:
           destination: artifact
 
       - run:
+          name: "Print user name"
+          command: echo ${APP_CENTER_USER_NAME}
+      - run:
+          name: "Print an app name "
+          command: echo ${APP_NAME}
+
+      - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
 
@@ -80,7 +87,7 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app ${APP_CENTER_USER_NAME}/${APP_NAME} --file artifact/app-debug.apk --group "Testers"
+          command: appcenter distribute release --app ${APP_CENTER_USER_NAME}/${APP_NAME} --file app/build/outputs/apk/debug/app-debug.apk --group "Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
 
