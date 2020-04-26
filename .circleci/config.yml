@@ -78,15 +78,12 @@ jobs:
           name: Login to APP CENTER
           command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
 
-      - run:
-          name: Deliver to appcenter
-          command: |
+      - run: |
           appcenter distribute release -a $APP_NAME  -r "Release Notes Here" -g "Testers" -f app/build/outputs/apk/debug/app-debug.apk --token $APP_CENTER_TOKEN
           LATEST_VERSION="$(appcenter distribute releases list --app $APP_NAME --token $APP_CENTER_TOKEN | grep ID | head -1| tr -s ' ' | cut -f2 -d ' ')"
           echo $LATEST_VERSION
           appcenter distribute releases add-destination -a $APP_NAME -d "Testers" -t group -r $LATEST_VERSION --token $APP_CENTER_TOKEN
-         # command: appcenter distribute release --debug --app ${APP_CENTER_USER_NAME}/${APP_NAME} --file app/build/outputs/apk/debug/app-debug.apk --group "Testers"
-          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
+
 
 
       # Persist the specified paths (artifact) into the workspace for use in downstream job.
@@ -97,7 +94,8 @@ jobs:
 #          # Must be relative path from root
 #          paths:
 #            - artifact
-
+          # command: appcenter distribute release --debug --app ${APP_CENTER_USER_NAME}/${APP_NAME} --file app/build/outputs/apk/debug/app-debug.apk --group "Testers"
+        # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
   deploy:
     executor: common-executor
