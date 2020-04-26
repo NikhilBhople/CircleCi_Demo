@@ -70,9 +70,6 @@ jobs:
           path: app/build/outputs/apk/debug/
           destination: artifact
 
-      - store_artifacts:
-          path: artifact
-
       - run:
           name: Download appcenter CLI
           command: sudo npm install appcenter-cli -g
@@ -83,18 +80,18 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file app/build/outputs/apk/debug/app-debug.apk --group "App Testers"
+          command: appcenter distribute release --debug --app ${APP_CENTER_USER_NAME}/${APP_NAME} --file artifact/app-debug.apk --group "Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
 
       # Persist the specified paths (artifact) into the workspace for use in downstream job.
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
-          root: .
-          # Must be relative path from root
-          paths:
-            - artifact
+#      - persist_to_workspace:
+#          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+#          # taken to be the root directory of the workspace.
+#          root: .
+#          # Must be relative path from root
+#          paths:
+#            - artifact
 
 
   deploy:
