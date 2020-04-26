@@ -95,16 +95,16 @@ jobs:
       - run: cd artifact
       - run: ls
 
-#      - run:
-#          name: Download appcenter CLI
-#          command: sudo npm install appcenter-cli -g
-#
-#      - run:
-#          name: Login to APP CENTER
-#          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
-#
-#      - run:
-#          name: Deliver to appcenter
-#          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
-#          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
-#
+      - run:
+          name: Download appcenter CLI
+          command: sudo npm install appcenter-cli -g
+
+      - run:
+          name: Login to APP CENTER
+          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
+
+      - run:
+          name: Deliver to appcenter
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
+          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
+
