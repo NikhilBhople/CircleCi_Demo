@@ -87,7 +87,7 @@ jobs:
 
       - run:
           name: Deliver to appcenter
-          command: appcenter distribute release --app nikhilbhople/CircleCI --file app/build/outputs/apk/debug/app-debug.apk --group "Testers"
+          command: appcenter distribute release --debug --app nikhilbhople/CircleCI --file app/build/outputs/apk/debug/app-debug.apk --group "Testers"
           # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
 
