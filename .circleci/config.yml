@@ -5,12 +5,12 @@ workflows: # Define a Workflow running the build job, then the deploy job
   build-deploy: # Make a workflow to build and deploy your project
     jobs:
       - build
-      - deploy:
-          requires:
-            - build # Only run deploy job once the build job has completed
-          filters:
-            branches:
-              only: workflow # Only deploy when the commit is on the Master branch
+#      - deploy:
+#          requires:
+#            - build # Only run deploy job once the build job has completed
+#          filters:
+#            branches:
+#              only: workflow # Only deploy when the commit is on the Master branch
 
 
 executors:
@@ -73,6 +73,20 @@ jobs:
       - store_artifacts:
           path: artifact
 
+      - run:
+          name: Download appcenter CLI
+          command: sudo npm install appcenter-cli -g
+
+      - run:
+          name: Login to APP CENTER
+          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
+
+      - run:
+          name: Deliver to appcenter
+          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
+          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
+
+
       # Persist the specified paths (artifact) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -95,16 +109,16 @@ jobs:
       - run: cd artifact
       - run: ls
 
-      - run:
-          name: Download appcenter CLI
-          command: sudo npm install appcenter-cli -g
-
-      - run:
-          name: Login to APP CENTER
-          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
-
-      - run:
-          name: Deliver to appcenter
-          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
-          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
+#      - run:
+#          name: Download appcenter CLI
+#          command: sudo npm install appcenter-cli -g
+#
+#      - run:
+#          name: Login to APP CENTER
+#          command: appcenter login --token $APP_CENTER_TOKEN # getting token from environment variables
+#
+#      - run:
+#          name: Deliver to appcenter
+#          command: appcenter distribute release --debug --app $APP_CENTER_USER_NAME/$APP_NAME --file ~/artifact/app-debug.apk --group "App Testers"
+#          # See https://circleci.com/docs/2.0/deployment-examples/index.html for deploy examples
 
